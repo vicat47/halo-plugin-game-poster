@@ -5,7 +5,7 @@ plugins {
     id "run.halo.plugin.devtools" version "0.0.7"
 }
 
-group 'run.halo.starter'
+group 'top.vicat.halo.plugin'
 sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -53,4 +53,8 @@ build {
 
 halo {
     version = '2.11'
+    port = 18090
+    superAdminUsername = 'admin'
+    superAdminPassword = '123456'
+    externalUrl = 'http://localhost:18090'
 }

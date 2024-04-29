@@ -1,27 +1,16 @@
-# plugin-starter
+# plugin-game-poster
 
-Halo 2.0 插件开发快速开始模板。
+Halo 2.0 插件游戏海报墙插件。
 
-## 开发环境
+## 简介
+`plugin-game-poster` 是一个为 `halo` 使用的海报墙插件。
 
-插件开发的详细文档请查阅：<https://docs.halo.run/developer-guide/plugin/introduction>
+## 功能
 
-所需环境：
+## Goals
 
-1. Java 17
-2. Node 18
-3. pnpm 8
-4. Docker (可选)
-
-克隆项目：
-
-```bash
-git clone git@github.com:halo-sigs/plugin-starter.git
-
-# 或者当你 fork 之后
-
-git clone git@github.com:{your_github_id}/plugin-starter.git
-```
+## TODO
+- Steam
 
 ```bash
 cd path/to/plugin-starter
