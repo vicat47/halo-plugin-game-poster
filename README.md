@@ -3,63 +3,14 @@
 Halo 2.0 插件游戏海报墙插件。
 
 ## 简介
-`plugin-game-poster` 是一个为 `halo` 使用的海报墙插件。
+`plugin-game-poster` 是一个为 `halo` 使用的海报墙插件。该插件旨在提供一个额外的路由`games` 来展示用户所拥有的游戏及玩过的游戏，并对多种游戏平台有所支持。
 
 ## 功能
 
+- 通过接口同步用户状态
+- 获取用户游戏库存
+- 获取用户游戏详细信息
+
 ## Goals
 
-## TODO
-- Steam
-
-```bash
-cd path/to/plugin-starter
-```
-
-### 运行方式 1（推荐）
-
-> 此方式需要本地安装 Docker
-
-```bash
-# macOS / Linux
-./gradlew pnpmInstall
-
-# Windows
-./gradlew.bat pnpmInstall
-```
-
-```bash
-# macOS / Linux
-./gradlew haloServer
-
-# Windows
-./gradlew.bat haloServer
-```
-
-执行此命令后，会自动创建一个 Halo 的 Docker 容器并加载当前的插件，更多文档可查阅：<https://docs.halo.run/developer-guide/plugin/basics/devtools>
-
-### 运行方式 2
-
-> 此方式需要使用源码运行 Halo
-
-编译插件：
-
-```bash
-# macOS / Linux
-./gradlew build
-
-# Windows
-./gradlew.bat build
-```
-
-修改 Halo 配置文件：
-
-```yaml
-halo:
-  plugin:
-    runtime-mode: development
-    fixedPluginPath:
-      - "/path/to/plugin-starter"
-```
-
-最后重启 Halo 项目即可。
+- 提供多平台的解决方案
