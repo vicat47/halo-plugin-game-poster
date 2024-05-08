@@ -16,7 +16,8 @@ repositories {
 }
 
 dependencies {
-    implementation platform('run.halo.tools.platform:plugin:2.11.0-SNAPSHOT')
+    implementation platform('run.halo.tools.platform:plugin:2.14.0-SNAPSHOT')
+    implementation 'org.jsoup:jsoup'
     compileOnly 'run.halo.app:api'
 
     testImplementation 'run.halo.app:api'
@@ -52,7 +53,7 @@ build {
 }
 
 halo {
-    version = '2.11'
+    version = '2.14'
     port = 18090
     superAdminUsername = 'admin'
     superAdminPassword = '123456'

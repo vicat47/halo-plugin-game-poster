@@ -4,14 +4,16 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   # The name defines how the plugin is invoked, A unique name
-  name: game-poster
+  name: plugin-game-poster
 spec:
   enabled: true
-  requires: ">=2.11.0"
+  requires: ">=2.14.0"
   author:
     name: vicat
     website: https://github.com/vicat47
   logo: logo.png
+  configMapName: plugin-game-poster-configmap
+  settingName: plugin-game-poster-settings
   homepage: https://github.com/vicat47/plugin-game-poster#readme
   repo: https://github.com/vicat47/plugin-game-poster
   issues: https://github.com/vicat47/plugin-game-poster/issues

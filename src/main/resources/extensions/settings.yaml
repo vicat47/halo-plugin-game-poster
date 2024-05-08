@@ -1,0 +1,54 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: plugin-game-poster-settings
+spec:
+  forms:
+    - group: base
+      label: 基本设置
+      formSchema:
+        - $formkit: text
+          label: 页面标题
+          name: title
+          validation: required
+          value: '游戏空间'
+        - $formkit: text
+          label: 单页游戏数目
+          name: pageSize
+          validation: required|Number
+          value: 10
+        - $formkit: text
+          label: steam 平台 key
+          name: steamKey
+          validation: required|String
+    - group: proxy
+      label: 代理配置
+      formSchema:
+        - $cmp: FormKit
+          props:
+            name: switch
+            type: checkbox
+            id: switch
+            label: 启用代理
+        - $formkit: text
+          if: '$get(proxySwitch).value'
+          label: 地址
+          name: address
+          value: host.docker.internal
+          help: 为插件代理使用的 address
+        - $formkit: text
+          if: '$get(proxySwitch).value'
+          label: 端口
+          name: port
+          validation: Number
+          value: 7890
+        - $formkit: text
+          if: '$get(proxySwitch).value'
+          label: 用户名
+          name: username
+          help: 非必填
+        - $formkit: text
+          if: '$get(proxySwitch).value'
+          label: 密码
+          name: password
+          help: 非必填
