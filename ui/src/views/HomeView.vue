@@ -6,6 +6,12 @@ import RiCodeBoxLine from "~icons/ri/code-box-line";
 import RiBookReadLine from "~icons/ri/book-read-line";
 import RiComputerLine from "~icons/ri/computer-line";
 import RiArrowRightSLine from "~icons/ri/arrow-right-s-line";
+import axios from "axios";
+
+const request = axios.create({
+  baseURL: "/",
+  timeout: 1000,
+})
 
 onMounted(() => {
   confetti({
@@ -14,6 +20,10 @@ onMounted(() => {
     origin: { y: 0.6, x: 0.58 },
   });
 });
+
+function refreshData() {
+  request.post("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/games/refresh");
+}
 </script>
 
 <template>
@@ -21,6 +31,7 @@ onMounted(() => {
     <div class="wrapper">
       <span class="title"> 你已经成功运行起了插件！ </span>
       <span class="message">你可以点击下方文档继续下一步</span>
+      <button @click="refreshData">hello world</button>
       <div class="docs">
         <a
           href="https://docs.halo.run/developer-guide/plugin/publish"

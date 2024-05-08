@@ -9,14 +9,14 @@ export default definePlugin({
     {
       parentName: "Root",
       route: {
-        path: "/example",
-        name: "Example",
+        path: "/games",
+        name: "游戏空间",
         component: HomeView,
         meta: {
-          title: "示例页面",
+          title: "游戏空间",
           searchable: true,
           menu: {
-            name: "示例页面",
+            name: "游戏空间",
             group: "示例分组",
             icon: markRaw(IconPlug),
             priority: 0,

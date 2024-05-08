@@ -7,11 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import run.halo.app.plugin.ReactiveSettingFetcher;
 import top.vicat.halo.plugin.gameposter.client.ProxyWebClientFactory;
 import top.vicat.halo.plugin.gameposter.platforms.steam.dto.PlayerOwnGame;
 import top.vicat.halo.plugin.gameposter.platforms.steam.dto.PlayerState;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,7 +39,9 @@ public class SteamApiClient {
                     .retrieve()
                     .bodyToMono(ObjectNode.class)
                     .flatMapIterable(item -> item.withArray("/response/players")))
-            ).map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerState.class));
+            )
+            .flatMap(Function.identity())
+            .map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerState.class));
     }
 
     public Flux<PlayerOwnGame> getPlayerOwnGame(String steamId) {
@@ -53,6 +58,7 @@ public class SteamApiClient {
                     .retrieve()
                     .bodyToMono(ObjectNode.class)
                     .flatMapIterable(item -> item.withArray("/response/games")))
-            ).map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerOwnGame.class));
+            ).flatMap(Function.identity())
+            .map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerOwnGame.class));
     }
 }

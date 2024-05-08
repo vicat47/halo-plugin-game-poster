@@ -21,6 +21,10 @@ spec:
           label: steam 平台 key
           name: steamKey
           validation: required|String
+        - $formkit: text
+          label: steam 平台 id
+          name: accountId
+          validation: required|String
     - group: proxy
       label: 代理配置
       formSchema:
@@ -41,7 +45,7 @@ spec:
           label: 端口
           name: port
           validation: Number
-          value: 7890
+          value: 7897
         - $formkit: text
           if: '$get(proxySwitch).value'
           label: 用户名

@@ -29,8 +29,8 @@ public class GamePosterRouter {
     Mono<ServerResponse> renderGamePage(ServerRequest request) {
         // 或许你需要准备你需要提供给模板的默认数据，非必须
         var model = new HashMap<String, Object>();
-        model.put("moments", List.of());
-        return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "moments")
+        model.put("games", List.of());
+        return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "games")
             .flatMap(templateName -> ServerResponse.ok().render(templateName, model));
     }
 }

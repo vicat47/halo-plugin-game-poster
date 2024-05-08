@@ -1,6 +1,7 @@
 package top.vicat.halo.plugin.gameposter.platforms.steam.enums;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public enum SteamPersonalStateEnum {
     WANT_TO_TRADE(5, "想要交易"),
     WANT_TO_PLAY(6, "想要玩"),
     ;
-    @JsonEnumDefaultValue
+    @JsonValue
     private final Integer code;
     private final String description;
 }

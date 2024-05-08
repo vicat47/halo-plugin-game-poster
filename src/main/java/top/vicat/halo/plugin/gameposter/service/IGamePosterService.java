@@ -5,6 +5,6 @@ import top.vicat.halo.plugin.gameposter.entity.UserBaseProfile;
 
 public interface IGamePosterService {
 
-    Flux<UserBaseProfile> getUserBaseProfiles();
+    Flux<UserBaseProfile.UserBaseProfileSpec> getUserBaseProfiles(String accountId);
 
 }
