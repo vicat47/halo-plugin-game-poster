@@ -25,4 +25,18 @@ public class SteamProfileClient {
                 .map(Jsoup::parse));
     }
 
+    /**
+     * 通过请求获取个人悬浮页
+     * @param miniProfileId miniProfile id，从 profile 页面可以取到
+     * @return 返回页面 html
+     */
+    public Mono<Document> getMiniProfile(String miniProfileId) {
+        return webClientFactory.get().flatMap(webClient -> webClient.get()
+            .uri("https://steamcommunity.com/miniprofile/" + miniProfileId)
+            .accept(MediaType.TEXT_HTML)
+            .retrieve()
+            .bodyToMono(String.class)
+            .map(Jsoup::parse));
+    }
+
 }
