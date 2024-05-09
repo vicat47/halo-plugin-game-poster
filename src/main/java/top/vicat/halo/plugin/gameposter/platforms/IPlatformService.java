@@ -7,4 +7,6 @@ public interface IPlatformService {
 
     Mono<UserBaseProfile.UserBaseProfileSpec> getUserBaseProfile(String accountId);
 
+    String getPlatformCode();
+
 }

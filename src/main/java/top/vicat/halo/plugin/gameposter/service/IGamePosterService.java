@@ -1,10 +1,10 @@
 package top.vicat.halo.plugin.gameposter.service;
 
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import top.vicat.halo.plugin.gameposter.entity.UserBaseProfile;
 
 public interface IGamePosterService {
 
-    Flux<UserBaseProfile.UserBaseProfileSpec> getUserBaseProfiles(String accountId);
+    Mono<UserBaseProfile.UserBaseProfileSpec> getUserBaseProfiles(String accountId);
 
 }

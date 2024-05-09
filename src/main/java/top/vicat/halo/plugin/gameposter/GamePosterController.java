@@ -1,6 +1,7 @@
 package top.vicat.halo.plugin.gameposter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import run.halo.app.plugin.ApiVersion;
 import run.halo.app.plugin.ReactiveSettingFetcher;
 import top.vicat.halo.plugin.gameposter.service.IGamePosterService;
 
+@Slf4j
 @ApiVersion("gameposter.plugin.halo.vicat.top/v1alpha1")
 @RequestMapping("/games")
 @RestController
@@ -21,8 +23,8 @@ public class GamePosterController {
     @PostMapping("/refresh")
     public Mono<Void> refresh() {
         return settingFetcher.get("base").map(base -> base.get("accountId").asText())
-            .flatMapMany(gamePosterService::getUserBaseProfiles)
-            .doOnNext(System.out::println)
+            .flatMap(gamePosterService::getUserBaseProfiles)
+            .doOnNext(item -> log.info(String.valueOf(item)))
             .then();
     }
 

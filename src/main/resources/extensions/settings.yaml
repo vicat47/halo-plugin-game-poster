@@ -28,31 +28,35 @@ spec:
     - group: proxy
       label: 代理配置
       formSchema:
-        - $cmp: FormKit
-          props:
-            name: switch
-            type: checkbox
-            id: switch
-            label: 启用代理
+        - $formkit: radio
+          name: enabled
+          id: enabled
+          label: 是否启用代理
+          value: false
+          options:
+            - label: 启用
+              value: true
+            - label: 关闭
+              value: false
         - $formkit: text
-          if: '$get(proxySwitch).value'
+          if: '$get(enabled).value'
           label: 地址
           name: address
           value: host.docker.internal
           help: 为插件代理使用的 address
         - $formkit: text
-          if: '$get(proxySwitch).value'
+          if: '$get(enabled).value'
           label: 端口
           name: port
           validation: Number
           value: 7897
         - $formkit: text
-          if: '$get(proxySwitch).value'
+          if: '$get(enabled).value'
           label: 用户名
           name: username
           help: 非必填
         - $formkit: text
-          if: '$get(proxySwitch).value'
+          if: '$get(enabled).value'
           label: 密码
           name: password
           help: 非必填
