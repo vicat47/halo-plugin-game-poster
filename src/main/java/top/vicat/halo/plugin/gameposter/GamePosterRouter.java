@@ -22,7 +22,7 @@ public class GamePosterRouter {
     private final TemplateNameResolver templateNameResolver;
 
     @Bean
-    RouterFunction<ServerResponse> momentRouterFunction() {
+    RouterFunction<ServerResponse> gameRouterFunction() {
         return route(GET("/games"), this::renderGamePage);
     }
 

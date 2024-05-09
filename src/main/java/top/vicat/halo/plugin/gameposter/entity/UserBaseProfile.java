@@ -1,12 +1,16 @@
 package top.vicat.halo.plugin.gameposter.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import run.halo.app.extension.AbstractExtension;
 import run.halo.app.extension.GVK;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
@@ -18,6 +22,9 @@ import run.halo.app.extension.GVK;
     plural = "userBaseProfiles"
 )
 public class UserBaseProfile extends AbstractExtension {
+
+    @Schema(requiredMode = REQUIRED)
+    private UserBaseProfileSpec userBaseProfileSpec;
 
     @Data
     public static class UserBaseProfileSpec {
@@ -60,8 +67,29 @@ public class UserBaseProfile extends AbstractExtension {
         VIDEO
     }
 
+    @Getter
+    @AllArgsConstructor
     public enum PlayerState {
-        OFFLINE
+        OFFLINE(0, "离线"),
+        ONLINE(1, "在线"),
+        BUSY(2, "忙碌"),
+        LEAVE(3, "离开"),
+        NAPPING(4, "打盹"),
+        WANT_TO_TRADE(5, "想要交易"),
+        WANT_TO_PLAY(6, "想要玩"),
+        IN_GAME(50, "游戏中"),
+        ;
+        @JsonValue
+        private final Integer code;
+        private final String description;
+        public static PlayerState getByCode(Integer code) {
+            for (PlayerState state : PlayerState.values()) {
+                if (state.getCode().equals(code)) {
+                    return state;
+                }
+            }
+            return null;
+        }
     }
 
     @Data
