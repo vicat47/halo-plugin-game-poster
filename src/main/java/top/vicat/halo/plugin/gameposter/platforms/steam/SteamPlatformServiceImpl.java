@@ -63,33 +63,34 @@ public class SteamPlatformServiceImpl implements IPlatformService {
             }
             return new PlayerStateRecord(playerState, profile);
         }).flatMap(playerStateRecord -> steamProfileClient.getProfile(playerStateRecord.playerState().profileUrl())
-                .map(document -> {
-                    Optional<Document> docOpt = Optional.ofNullable(document);
-                    docOpt.map(doc -> doc.selectXpath(AVATAR_MASK_XPATH).first())
-                        .map(element -> element.attr("src"))
-                            .ifPresent(resource -> playerStateRecord.userBaseProfile().setAvatarMask(new UserBaseProfile.ProfileMedia(
-                                resource,
+            .map(document -> {
+                Optional<Document> docOpt = Optional.ofNullable(document);
+                docOpt.map(doc -> doc.selectXpath(AVATAR_MASK_XPATH).first())
+                    .map(element -> element.attr("src"))
+                    .ifPresent(resource -> playerStateRecord.userBaseProfile().setAvatarMask(new UserBaseProfile.ProfileMedia(
+                        resource,
+                        UserBaseProfile.ProfileMediaType.IMAGE
+                    )));
+                docOpt.map(doc -> doc.selectXpath(BACKGROUND_XPATH).first())
+                    .map(element -> element.attr("style"))
+                    .ifPresent(style -> {
+                        Matcher matcher = backgroundPattern.matcher(style);
+                        if (matcher.find()) {
+                            String group = matcher.group(1);
+                            log.info(group);
+                            playerStateRecord.userBaseProfile().setBackground(new UserBaseProfile.ProfileMedia(
+                                group,
                                 UserBaseProfile.ProfileMediaType.IMAGE
-                            )));
-                    docOpt.map(doc -> doc.selectXpath(BACKGROUND_XPATH).first())
-                            .map(element -> element.attr("style"))
-                                .ifPresent(style -> {
-                                    Matcher matcher = backgroundPattern.matcher(style);
-                                    if (matcher.find()) {
-                                        String group = matcher.group(1);
-                                        log.info(group);
-                                        playerStateRecord.userBaseProfile().setBackground(new UserBaseProfile.ProfileMedia(
-                                            group,
-                                            UserBaseProfile.ProfileMediaType.IMAGE
-                                        ));
-                                    }
-                                });
+                            ));
+                        }
+                    });
 
-                    String miniProfileId = docOpt.map(doc -> doc.selectXpath(MINI_PROFILE_ID_XPATH).first())
-                            .map(element -> element.attr("data-miniprofile")).orElse(null);
-                    playerStateRecord.userBaseProfile().setExtra("xxxxxx");
-                    return new BaseAndMiniProfileRecord(miniProfileId, playerStateRecord.userBaseProfile());
-                }).timeout(Duration.ofSeconds(10))
+                String miniProfileId = docOpt.map(doc -> doc.selectXpath(MINI_PROFILE_ID_XPATH).first())
+                        .map(element -> element.attr("data-miniprofile")).orElse(null);
+                playerStateRecord.userBaseProfile().setExtra("xxxxxx");
+                return new BaseAndMiniProfileRecord(miniProfileId, playerStateRecord.userBaseProfile());
+            })
+            .timeout(Duration.ofSeconds(10))
             .flatMap(baseAndMiniProfileRecord ->
                 steamProfileClient.getMiniProfile(baseAndMiniProfileRecord.miniProfileId())
                     .map(document -> {
