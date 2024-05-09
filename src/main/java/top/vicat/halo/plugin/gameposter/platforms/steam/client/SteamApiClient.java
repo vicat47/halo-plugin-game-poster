@@ -41,7 +41,8 @@ public class SteamApiClient {
                     .flatMapIterable(item -> item.withArray("/response/players")))
             )
             .flatMap(Function.identity())
-            .map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerState.class));
+            .map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerState.class))
+            .doOnNext(playerState -> log.info("request steam player state: {}", playerState));
     }
 
     public Flux<PlayerOwnGame> getPlayerOwnGame(String steamId) {

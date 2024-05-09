@@ -31,17 +31,17 @@ public class GamePosterController {
             .doOnNext(item -> log.info(String.valueOf(item)))
             .flatMap(item -> {
                 UserBaseProfile userBaseProfile = new UserBaseProfile();
+                userBaseProfile.setUserBaseProfileSpec(item);
                 userBaseProfile.setMetadata(new Metadata());
                 userBaseProfile.getMetadata().setGenerateName("gameposter-");
-                userBaseProfile.setUserBaseProfileSpec(item);
+                userBaseProfile.getMetadata().setName("gameposter-" + userBaseProfile.getUserBaseProfileSpec().getPlatformCode().toLowerCase() + "-" + userBaseProfile.getUserBaseProfileSpec().getId());
                 return extensionClient.create(userBaseProfile);
             })
             .doOnError(throwable -> {
                 log.error(String.valueOf(throwable));
             })
             .doOnNext(userBaseProfile -> {
-                log.info("-------------------------");
-                log.info(userBaseProfile.toString());
+                log.info("userBaseProfile save success!");
             })
             .then();
     }

@@ -10,7 +10,7 @@ public class UserBaseProfileConverter {
         if (playerState.gameId() != null) {
             return UserBaseProfile.PlayerState.IN_GAME;
         }
-        return UserBaseProfile.PlayerState.getByCode(playerState.personaState().getCode());
+        return UserBaseProfile.PlayerState.from(playerState.personaState().name());
     }
 
     public static UserBaseProfile.UserBaseProfileSpec toUserBaseProfileSpec(final String accountId, final String platformCode, final PlayerState playerState) {

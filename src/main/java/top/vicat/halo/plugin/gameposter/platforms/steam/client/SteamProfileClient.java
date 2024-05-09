@@ -22,7 +22,8 @@ public class SteamProfileClient {
                 .accept(MediaType.TEXT_HTML)
                 .retrieve()
                 .bodyToMono(String.class)
-                .map(Jsoup::parse));
+                .map(Jsoup::parse))
+                .doOnNext(document -> log.info("requested profile: {}", profileUrl));
     }
 
     /**
@@ -36,7 +37,8 @@ public class SteamProfileClient {
             .accept(MediaType.TEXT_HTML)
             .retrieve()
             .bodyToMono(String.class)
-            .map(Jsoup::parse));
+            .map(Jsoup::parse))
+            .doOnNext(document -> log.info("requested mini profile: {}", miniProfileId));
     }
 
 }
