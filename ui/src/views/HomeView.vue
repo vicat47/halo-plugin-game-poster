@@ -10,7 +10,7 @@ import axios from "axios";
 
 const request = axios.create({
   baseURL: "/",
-  timeout: 10000,
+  timeout: 20_000,
 })
 
 onMounted(() => {
@@ -22,7 +22,7 @@ onMounted(() => {
 });
 
 function refreshData() {
-  request.post("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/games/refresh");
+  request.post("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/systm/refresh");
 }
 </script>
 

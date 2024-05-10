@@ -1,7 +1,9 @@
 package top.vicat.halo.plugin.gameposter.entity;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,8 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import run.halo.app.extension.AbstractExtension;
 import run.halo.app.extension.GVK;
-
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
@@ -99,6 +99,15 @@ public class UserBaseProfile extends AbstractExtension {
         private String name;
         @Schema
         private ProfileMedia media;
+    }
+
+    public String getIdName() {
+        Optional<UserBaseProfileSpec> specOpt =
+            Optional.ofNullable(this.getUserBaseProfileSpec());
+        if (specOpt.map(UserBaseProfileSpec::getPlatformCode).isEmpty() || specOpt.map(UserBaseProfileSpec::getId).isEmpty()) {
+            return null;
+        }
+        return specOpt.map(UserBaseProfileSpec::getPlatformCode).get().toLowerCase() + "-" + specOpt.map(UserBaseProfileSpec::getId).get();
     }
 
 }

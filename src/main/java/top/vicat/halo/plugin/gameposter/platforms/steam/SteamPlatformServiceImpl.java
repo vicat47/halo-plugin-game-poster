@@ -2,7 +2,6 @@ package top.vicat.halo.plugin.gameposter.platforms.steam;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
@@ -50,61 +49,75 @@ public class SteamPlatformServiceImpl implements IPlatformService {
             String miniProfileId,
             UserBaseProfile.UserBaseProfileSpec userBaseProfileSpec
         ) {}
-        Mono<PlayerState> playerStateMono =
-            steamApiClient.getUserState(Collections.singletonList(accountId)).next();
-        return playerStateMono.map(playerState -> {
-            UserBaseProfile.UserBaseProfileSpec profile = UserBaseProfileConverter.toUserBaseProfileSpec(accountId, this.getPlatformCode(), playerState);
-            return new PlayerStateRecord(playerState, profile);
-        }).flatMap(playerStateRecord -> steamProfileClient.getProfile(playerStateRecord.playerState().profileUrl())
-            .map(document -> {
-                Optional<Document> docOpt = Optional.ofNullable(document);
-                docOpt.map(doc -> doc.selectXpath(AVATAR_MASK_XPATH).first())
-                    .map(element -> element.attr("src"))
-                    .ifPresent(resource -> playerStateRecord.userBaseProfile().setAvatarMask(new UserBaseProfile.ProfileMedia(
-                        resource,
-                        UserBaseProfile.ProfileMediaType.IMAGE
-                    )));
-                docOpt.map(doc -> doc.selectXpath(BACKGROUND_XPATH).first())
-                    .map(element -> element.attr("style"))
-                    .ifPresent(style -> {
-                        Matcher matcher = backgroundPattern.matcher(style);
-                        if (matcher.find()) {
-                            String group = matcher.group(1);
-                            playerStateRecord.userBaseProfile().setBackground(new UserBaseProfile.ProfileMedia(
-                                group,
-                                UserBaseProfile.ProfileMediaType.IMAGE
-                            ));
-                        }
-                    });
+        return steamApiClient.getUserState(Collections.singletonList(accountId)).next()
+            .map(playerState -> {
+                UserBaseProfile.UserBaseProfileSpec profile = UserBaseProfileConverter.toUserBaseProfileSpec(accountId, this.getPlatformCode(), playerState);
+                return new PlayerStateRecord(playerState, profile);
+            })
+            .doOnNext(playerStateRecord -> log.debug("fetch user state complete"))
+            .flatMap(playerStateRecord -> steamProfileClient.getProfile(playerStateRecord.playerState().profileUrl())
+                .map(document -> {
+                    Optional<Document> docOpt = Optional.ofNullable(document);
+                    docOpt.map(doc -> doc.selectXpath(AVATAR_MASK_XPATH).first())
+                        .map(element -> element.attr("src"))
+                        .ifPresent(resource -> playerStateRecord.userBaseProfile().setAvatarMask(new UserBaseProfile.ProfileMedia(
+                            resource,
+                            UserBaseProfile.ProfileMediaType.IMAGE
+                        )));
+                    docOpt.map(doc -> doc.selectXpath(BACKGROUND_XPATH).first())
+                        .map(element -> element.attr("style"))
+                        .ifPresent(style -> {
+                            Matcher matcher = backgroundPattern.matcher(style);
+                            if (matcher.find()) {
+                                String group = matcher.group(1);
+                                playerStateRecord.userBaseProfile().setBackground(new UserBaseProfile.ProfileMedia(
+                                    group,
+                                    UserBaseProfile.ProfileMediaType.IMAGE
+                                ));
+                            }
+                        });
 
-                String miniProfileId = docOpt.map(doc -> doc.selectXpath(MINI_PROFILE_ID_XPATH).first())
-                        .map(element -> element.attr("data-miniprofile")).orElse(null);
-                playerStateRecord.userBaseProfile().setExtra("xxxxxx");
-                return new BaseAndMiniProfileRecord(miniProfileId, playerStateRecord.userBaseProfile());
-            })
-            .timeout(Duration.ofSeconds(10))
-            .flatMap(baseAndMiniProfileRecord ->
-                steamProfileClient.getMiniProfile(baseAndMiniProfileRecord.miniProfileId())
-                    .map(document -> {
-                        Optional<Document> docOpt = Optional.ofNullable(document);
-                        docOpt.map(doc -> doc.selectXpath(PROFILE_BACKGROUND_XPATH).first())
-                            .map(ele -> ele.attr("src"))
-                            .ifPresent(src -> baseAndMiniProfileRecord.userBaseProfileSpec().setProfileBackground(new UserBaseProfile.ProfileMedia(
-                                src,
-                                UserBaseProfile.ProfileMediaType.VIDEO
-                            )));
-                        return baseAndMiniProfileRecord.userBaseProfileSpec();
-                    })
-            )
-            .timeout(Duration.ofSeconds(10))
-            .onErrorResume(throwable -> {
-                if (throwable instanceof TimeoutException) {
-                    log.warn("获取个人页面超时！{}", playerStateRecord.playerState().profileUrl());
-                    return Mono.just(playerStateRecord.userBaseProfile());
-                }
-                return Mono.error(throwable);
-            })
-        );
+                    String miniProfileId = docOpt.map(doc -> doc.selectXpath(MINI_PROFILE_ID_XPATH).first())
+                            .map(element -> element.attr("data-miniprofile")).orElse(null);
+                    playerStateRecord.userBaseProfile().setExtra("xxxxxx");
+                    return new BaseAndMiniProfileRecord(miniProfileId, playerStateRecord.userBaseProfile());
+                })
+                .timeout(Duration.ofSeconds(5))
+                .onErrorResume(throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        log.warn("获取个人页面超时！{}", playerStateRecord.playerState().profileUrl());
+                        return Mono.just(new BaseAndMiniProfileRecord(
+                            null,
+                            playerStateRecord.userBaseProfile()
+                        ));
+                    }
+                    return Mono.error(throwable);
+                })
+                .flatMap(baseAndMiniProfileRecord -> {
+                    if (baseAndMiniProfileRecord.miniProfileId() == null) {
+                        return Mono.just(baseAndMiniProfileRecord.userBaseProfileSpec());
+                    }
+                    return steamProfileClient.getMiniProfile(baseAndMiniProfileRecord.miniProfileId())
+                        .map(document -> {
+                            Optional<Document> docOpt = Optional.ofNullable(document);
+                            docOpt.map(doc -> doc.selectXpath(PROFILE_BACKGROUND_XPATH).first())
+                                .map(ele -> ele.attr("src"))
+                                .ifPresent(src -> baseAndMiniProfileRecord.userBaseProfileSpec().setProfileBackground(new UserBaseProfile.ProfileMedia(
+                                    src,
+                                    UserBaseProfile.ProfileMediaType.VIDEO
+                                )));
+                            return baseAndMiniProfileRecord.userBaseProfileSpec();
+                        })
+                        .timeout(Duration.ofSeconds(5))
+                        .onErrorResume(throwable -> {
+                            if (throwable instanceof TimeoutException) {
+                                log.warn("获取 mini profile 页面超时！{}", playerStateRecord.playerState().profileUrl());
+                                return Mono.just(playerStateRecord.userBaseProfile());
+                            }
+                            return Mono.error(throwable);
+                        });
+                })
+            );
     }
 
     @Override

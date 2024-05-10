@@ -2,19 +2,17 @@ package top.vicat.halo.plugin.gameposter.platforms.steam.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import run.halo.app.plugin.ReactiveSettingFetcher;
 import top.vicat.halo.plugin.gameposter.client.ProxyWebClientFactory;
 import top.vicat.halo.plugin.gameposter.platforms.steam.dto.PlayerOwnGame;
 import top.vicat.halo.plugin.gameposter.platforms.steam.dto.PlayerState;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -42,7 +40,7 @@ public class SteamApiClient {
             )
             .flatMap(Function.identity())
             .map(jsonNode -> objectMapper.convertValue(jsonNode, PlayerState.class))
-            .doOnNext(playerState -> log.info("request steam player state: {}", playerState));
+            .doOnNext(playerState -> log.debug("request steam player state: {}", playerState));
     }
 
     public Flux<PlayerOwnGame> getPlayerOwnGame(String steamId) {
