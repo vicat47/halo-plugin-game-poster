@@ -22,7 +22,7 @@ onMounted(() => {
 });
 
 function refreshData() {
-  request.post("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/systm/refresh");
+  request.post("/apis/console.api.gameposter.plugin.halo.vicat.top/v1alpha1/refresh/profiles");
 }
 </script>
 

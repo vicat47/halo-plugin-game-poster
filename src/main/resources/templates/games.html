@@ -9,5 +9,19 @@
 </head>
 <body>
     <h1>hello world!</h1>
+    <div id="game-container" style="width: 100%; height: 1080px"></div>
 </body>
+<script>
+    fetch("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/userBaseProfiles", {
+        method: "GET"
+    })
+            .then(result => result.json())
+        .then(result => {
+            console.log(result)
+            let userBaseProfileSpec = result.items[0].userBaseProfileSpec;
+            let container = document.querySelector("#game-container");
+            let attribute = container.getAttribute("style");
+            container.setAttribute("style", `${attribute};background-image: url("${userBaseProfileSpec.background.url}")`);
+        });
+</script>
 </html>

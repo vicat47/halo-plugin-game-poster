@@ -29,16 +29,16 @@ public class GamePosterEndpoint implements CustomEndpoint {
     @Override
     public RouterFunction<ServerResponse> endpoint() {
         return route()
-            .POST("/system/refresh", this::handleRefresh)
+            .POST("/refresh/profiles", this::handleRefreshProfiles)
             .build();
     }
 
     @Override
     public GroupVersion groupVersion() {
-        return new GroupVersion("gameposter.plugin.halo.vicat.top", "v1alpha1");
+        return new GroupVersion("console.api.gameposter.plugin.halo.vicat.top", "v1alpha1");
     }
 
-    private Mono<ServerResponse> handleRefresh(ServerRequest serverRequest) {
+    private Mono<ServerResponse> handleRefreshProfiles(ServerRequest serverRequest) {
         return  settingFetcher.get("base").map(base -> base.get("accountId").asText())
             .flatMap(gamePosterService::getUserBaseProfiles)
             .doOnNext(item -> log.info(String.valueOf(item)))

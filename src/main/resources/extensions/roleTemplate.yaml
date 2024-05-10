@@ -1,0 +1,36 @@
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-gameposter-view
+  labels:
+    halo.run/role-template: "true"
+    rbac.authorization.halo.run/aggregate-to-anonymous: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "游戏海报"
+    rbac.authorization.halo.run/display-name: "海报查看"
+    rbac.authorization.halo.run/ui-permissions: |
+      ["plugin:gameposter:view"]
+rules:
+  - apiGroups: [ "gameposter.plugin.halo.vicat.top" ]
+    resources: [ "userBaseProfiles"]
+    verbs: [ "get", "list" ]
+
+---
+
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-gameposter-manage
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "游戏海报"
+    rbac.authorization.halo.run/display-name: "海报管理"
+    rbac.authorization.halo.run/ui-permissions: |
+      ["plugin:gameposter:manage"]
+    rbac.authorization.halo.run/dependencies: |
+      ["role-template-gameposter-view"]
+rules:
+  - apiGroups: [ "gameposter.plugin.halo.vicat.top" ]
+    resources: [ "userBaseProfiles"]
+    verbs: [ "create", "patch", "update", "delete", "deletecollection" ]
