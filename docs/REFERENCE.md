@@ -5,6 +5,12 @@ title: 参考资料
 # Steam API
 [steam web api](https://developer.valvesoftware.com/wiki/Steam_Web_API)
 [detailed info](https://steamcommunity.com/discussions/forum/1/1643167006257402427/)
+
+## 具有参考价值的 `steam` 个人主页
+
+- moneylead
+- thebalrog
+
 ## 1. 获取个人信息
 ```json5
 // GET http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?steamids=1234567890123456
