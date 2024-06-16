@@ -1,18 +1,24 @@
 <!doctype html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>games</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/plugins/plugin-game-poster/assets/static/personalCard.js}"></script>
 </head>
+
 <body>
-    <div class="container ">
-        <h1 class="basis-full text-3xl font-bold underline">hello world!123</h1>
-        <div id="game-container" style="width: 100%; height: 1080px">
-            <div class="bg-white rounded shadow border p-6 w-64">
+    <div id="game-bg-cover" class="bg-cover bg-center bg-no-repeat w-screen h-lvh">
+        <div class="container mx-auto place-content-center">
+            <!-- <account-card class="max-w-lg mx-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-8 mb-8"></account-card> -->
+            <!-- <personal-card-component class="basis-full"></personal-card-component> -->
+            <personal-card id="personal-card" style="height: 200px"></personal-card>
+            <h1 class="basis-full text-3xl font-bold underline">hello world!123</h1>
+            <div class=" bg-white rounded shadow border p-6 w-64">
                 <h5 class="text-3xl font-bold mb-4 mt-0">My Title</h5>
                 <p class="text-gray-700 text-sm">Content goes here</p>
             </div>
@@ -20,16 +26,62 @@
     </div>
 </body>
 <script>
-    fetch("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/userBaseProfiles", {
-        method: "GET"
-    })
-            .then(result => result.json())
+    /**
+     * @typedef {object} Media
+     * @property {string} url
+     * @property {string} type
+     */
+    /**
+     * @typedef {object} UserBaseProfileSpec
+     * @property {string} id
+     * @property {string} platformCode
+     * @property {string} name
+     * @property {string} realName
+     * @property {Media} avatar
+     * @property {Media} avatarMask
+     * @property {Media} profileBackground
+     * @property {Media} background
+     * @property {string} playerState
+     * @property {string} extra
+     */
+    /**
+     * 获取用户个人信息
+     * @returns {Promise<{
+     *     page: number;
+     *     size: number;
+     *     total: number;
+     *     items: {
+     *         apiVersion: string;
+     *         userBaseProfileSpec: UserBaseProfileSpec
+     *     }[]
+     * }>}
+     */
+    function requestUserBaseProfile() {
+        return fetch("/apis/gameposter.plugin.halo.vicat.top/v1alpha1/userBaseProfiles", { method: "GET" })
+        // return fetch("data.json", { method: "GET" })
+                .then(result => result.json());
+    }
+
+
+    requestUserBaseProfile()
         .then(result => {
-            console.log(result)
+            console.log(result);
             let userBaseProfileSpec = result.items[0].userBaseProfileSpec;
-            let container = document.querySelector("#game-container");
-            let attribute = container.getAttribute("style");
-            container.setAttribute("style", `${attribute};background-image: url("${userBaseProfileSpec.background.url}")`);
+
+            let card = document.querySelector("#personal-card");
+            card.setAttribute('avatar', userBaseProfileSpec?.avatar?.url  ?? "");
+            card.setAttribute('avatar-mask', userBaseProfileSpec?.avatarMask?.url ?? "");
+            card.setAttribute('username', userBaseProfileSpec.name);
+            card.setAttribute('profile-background', userBaseProfileSpec?.profileBackground?.url  ?? "");
+
+            let container = document.querySelector("#game-bg-cover");
+            if (userBaseProfileSpec.background?.type === "VIDEO") {
+                
+            }
+
+            container.setAttribute("style", `background-image: url("${userBaseProfileSpec?.background?.url  ?? ''}")`);
+
         });
 </script>
+
 </html>

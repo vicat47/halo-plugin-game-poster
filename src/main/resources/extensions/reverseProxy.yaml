@@ -1,0 +1,9 @@
+apiVersion: plugin.halo.run/v1alpha1
+kind: ReverseProxy
+metadata:
+  # 为了避免与其他插件冲突，推荐带上插件名称前缀
+  name: plugin-game-poster-reverse-proxy
+rules:
+  - path: /static/**
+    file:
+      directory: static
